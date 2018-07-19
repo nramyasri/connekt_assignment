@@ -1,32 +1,38 @@
 package model;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Box {
+public class Box implements Comparable<Box>{
 	
-	String id = UUID.randomUUID().toString();
+	String id ;
 	 
 	float height;
 	float weight;
 	
-	public Box(final List<Coordinates> coordinatesList) {
-		
+    List<Coordinates> coordinatesList;
+	
+	private static final Logger LOGGER = Logger.getLogger(Box.class.getName());
+	
+	public Box(List<Coordinates> coordinatesList) {
 		
 		if (!validateCoordinates(coordinatesList))
 		{
-			// Log 
-			// calculateHeight
-			// calculateWidth
-			// GenerateId
 			
 			LOGGER.info("must provide 4 sets of coordinates");
 		}
+		      id = UUID.randomUUID().toString();
+		      this.coordinatesList=coordinatesList;
 	}
 	
+
+	public List<Coordinates> getCoordinatesList() {
+		return coordinatesList;
+	}
+
 	private boolean validateCoordinates(List<Coordinates> coordinatesList) {
 		
 		if(coordinatesList.size()!=4) {
@@ -60,6 +66,55 @@ public class Box {
 		this.id = id;
 	}
 	
+	public float getHighestY(List<Coordinates> list) {
+		 
+		float max=Integer.MIN_VALUE;
+		
+		for(Coordinates c: list) {
+			
+			if(c.getY()>(float)max)
+			{
+				max=c.getY();
+			}
+		
+		}
+	
+		return max;
+}
+
+
+
+public int compare(Box box1, Box box2) {
+
+	System.out.println("Inside the compare function...");
+	float Box1HighestY = getHighestY(box1.getCoordinatesList());
+	float Box2HighestY = getHighestY(box2.getCoordinatesList());
+
+	//ascending order
+	return Float.compare(Box1HighestY, Box2HighestY);
+	
+//	return 	(int) (Box1HighestY-Box2HighestY);
+}
+
+
+
+
+@Override
+public int compareTo(Box b) {
+	
+	   LOGGER.info("Inside the compare function .. ");
+      if(getHighestY(this.coordinatesList)>getHighestY(b.getCoordinatesList()))
+      {
+    	  return 1;
+      }
+      else if(getHighestY(this.coordinatesList)<getHighestY(b.getCoordinatesList()))
+      {
+    	  return -1;
+      }
+	return 0;
+}
 	
 
+
 }
+
